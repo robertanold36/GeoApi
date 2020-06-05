@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "api",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "dev": "nodemon app"
+  },
+  "author": "robert anold",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "geo-hash": "0.0.2",
+    "geo-nearby": "^2.0.1",
+    "mongodb": "^3.5.8",
+    "ngeohash": "^0.6.3",
+    "nodemon": "^2.0.4"
+  }
+}
