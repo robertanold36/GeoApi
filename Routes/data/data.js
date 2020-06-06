@@ -49,14 +49,14 @@ router.get('/',(req,res)=>{
                             }
                             if(sample.length==0&radius==5000){
 
-                                res.status(200).end(JSON.stringify({message:msgError4,status:'OK'}));
+                                res.status(204).end();
                             }
                             radius+=1000;
                         }    
                     }
                     else{
 
-                        res.status(200).end(JSON.stringify({message:msgError3,status:'OK'}));
+                        res.status(204).end();
                     }
                 }
             });
