@@ -32,9 +32,9 @@ router.get('/',(req,res)=>{
             console.log('db connected');
             var db0=db.db("Garage");
 
-            db0.collection("garageStateE").find({}).toArray((err,result)=>{
+            db0.collection("garageState").find({}).toArray((err,result)=>{
                 if(err){
-                    console.log('fail bro');
+                    console.log('fail to connect');
                     res.status(404).end(JSON.stringify({message:msgError3,status:'internal server error'}));
 
                 }else{
@@ -56,7 +56,7 @@ router.get('/',(req,res)=>{
                     }
                     else{
 
-                        res.status(204).end();
+                        res.status(404).end(JSON.stringify({message:msgError4,status:'internal server error'}));
                     }
                 }
             });
