@@ -49,14 +49,14 @@ router.get('/',(req,res)=>{
                             }
                             if(sample.length==0&radius==5000){
 
-                                res.status(204).end();
+                                res.status(406).end(JSON.stringify({message:msgError4,status:'Criteria not match'}));
                             }
                             radius+=1000;
                         }    
                     }
                     else{
 
-                        res.status(404).end(JSON.stringify({message:msgError4,status:'internal server error'}));
+                        res.status(406).end(JSON.stringify({message:msgError4,status:'CRiteria not match'}));
                     }
                 }
             });
