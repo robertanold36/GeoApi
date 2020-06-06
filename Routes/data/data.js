@@ -16,11 +16,11 @@ router.get('/',(req,res)=>{
     var radius=1000;
 
    if(lat==null || lon==null){
-       res.status(400).json({ message:'please specify your location' });
+       res.status(400).end(JSON.stringify('please specify your location'));
    }else{
     client.connect((err,db)=>{
         if(err){
-            res.status(503).json({ message:'fail to connect to our database' });  
+            res.status(503).end(JSON.stringify('fail to connect to our database' ));  
             console.log('fail to connect to database');
 
         }else{
@@ -30,7 +30,7 @@ router.get('/',(req,res)=>{
             db0.collection("garageState").find({}).toArray((err,result)=>{
                 if(err){
                     
-                    res.status(500).json({ message:'fail to retrive data' });
+                    res.status(500).end(JSON.stringify('fail to retrive data' ));
                 }else{
                     if(result.length>0){
                         while(radius<=5000){
@@ -38,18 +38,18 @@ router.get('/',(req,res)=>{
                             const sample=geo.limit(1).nearBy(lat,lon,[250,radius]);
                             if(sample.length>0){
                                 console.log(radius);
-                                res.status(200).json(sample);
+                                res.status(200).end(JSON.stringify(sample));
                                 break;
                             }
                             if(sample.length==0&radius==5000){
-                                res.status(204).json({ message:'no nearby garage in 5km' });
+                                res.status(204).end(JSON.stringify('no nearby garage in 5km'));
                             }
                             radius+=1000;
                         }    
                     }
                     else{
 
-                        res.status(204).json({ message:'current no garage' });
+                        res.status(204).end(JSON.stringify('current no garage' ));
                     }
                 }
             });
