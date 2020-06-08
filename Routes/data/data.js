@@ -3,7 +3,7 @@ const router=express.Router();
 const {MongoClient}=require('mongodb');
 require('dotenv/config');
 
-const client=new MongoClient(process.env.DB_CONNECTION,{ useUnifiedTopology: true });
+const client=new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 //const geo=require('ngeohash');
@@ -24,9 +24,10 @@ router.get('/',(req,res)=>{
        res.status(400).end(JSON.stringify({message:msgError1,status:'missingParameter'}));
    }else{
     client.connect((err,db)=>{
+    
         if(err){
             res.status(404).end(JSON.stringify({message:msgError2,status:'internal server error'}));  
-            console.log('fail to connect to database');
+            console.log('fail to connect to database '+err);
 
         }else{
             console.log('db connected');
@@ -56,7 +57,7 @@ router.get('/',(req,res)=>{
                     }
                     else{
 
-                        res.status(406).end(JSON.stringify({message:msgError4,status:'CRiteria not match'}));
+                        res.status(406).end(JSON.stringify({message:msgError4,status:'Criteria not match'}));
                     }
                 }
             });
