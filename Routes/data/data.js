@@ -9,6 +9,18 @@ const client=new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true,
 //const geo=require('ngeohash');
 const Geo=require('geo-nearby');
 
+const data=[
+    {"location":{"coordinates":[-6.839758,39.240246],"type":"Point"},"name":"Bugurunu"},
+    {"location":{"coordinates":[-6.847598,39.229259],"type":"Point"},"name":"VIgunguti"},
+    {"location":{"coordinates":[-6.841292,39.198360],"type":"Point"},"name":"Segerea"},
+    {"location":{"coordinates":[-6.829190,39.227886],"type":"Point"},"name":"Tabata"},
+    {"location":{"coordinates":[-6.830895,39.262390],"type":"Point"},"name":"Ilala"},
+    {"location":{"coordinates":[-6.809078,39.202995],"type":"Point"},"name":"makuburi"}
+
+];
+
+
+
 router.get('/',(req,res)=>{
     
     var lat=req.query.lat!=undefined?req.query.lat:req.query.lat=null;
@@ -23,46 +35,66 @@ router.get('/',(req,res)=>{
    if(lat==null || lon==null){
        res.status(400).end(JSON.stringify({message:msgError1,status:'missingParameter'}));
    }else{
-    client.connect((err,db)=>{
+
+    client.connect().then((db)=>{
+
+        var db0=db.db("Garage");
+                console.log("db connected")
+                db0.collection("sample").findOne({ location: 
+                    { $nearSphere: { $geometry: 
+                        { type: "Point", coordinates:
+                         [ -6.846584,39.196204 ] }, 
+                         $maxDistance: 4000 } } },(err,result)=>{
+                             if(err){console.log(err)}else{
+                                 res.json(result);
+                             }
+                         });
     
-        if(err){
-            res.status(404).end(JSON.stringify({message:msgError2,status:'internal server error'}));  
-            console.log('fail to connect to database '+err);
+    }).catch(err=>{
+        console.log("db not connected");
+    });
 
-        }else{
-            console.log('db connected');
-            var db0=db.db("Garage");
+       // db0.collection("sample").insertMany(data,(err,res)=>{
+            //     if(err){console.log(err);}
+            //     else{
+            //         console.log("data inserted "+res);
+            //     }
+            // });
+         
 
-            db0.collection("garageState").find({}).toArray((err,result)=>{
-                if(err){
-                    console.log('fail to connect');
-                    res.status(404).end(JSON.stringify({message:msgError3,status:'internal server error'}));
+            // db0.collection("sample").createIndex({ location:"2dsphere" },(err)=>{
+            //     if(err){
+            //         console.log('err '+err);
+            //     }else{
+            //         console.log("successfully");
+            //     }
+            // })
+            
 
-                }else{
-                    if(result.length>0){
-                        while(radius<=5000){
-                            const geo=new Geo(result,{ id:'_id',hash:'geoHash' });
-                            const sample=geo.limit(1).nearBy(lat,lon,[250,radius]);
-                            if(sample.length>0){
-                                console.log(radius);
-                                res.status(200).end(JSON.stringify(sample));
-                                break;
-                            }
-                            if(sample.length==0&radius==5000){
+    // client.connect((err,db)=>{
+    
+    //     if(err){
+    //         res.status(404).end(JSON.stringify({message:msgError2,status:'internal server error'}));  
+    //         console.log('fail to connect to database '+err);
 
-                                res.status(406).end(JSON.stringify({message:msgError4,status:'Criteria not match'}));
-                            }
-                            radius+=1000;
-                        }    
-                    }
-                    else{
+    //     }else{
+    //         console.log('db connected');
+    //         var db0=db.db("Garage");
 
-                        res.status(406).end(JSON.stringify({message:msgError4,status:'Criteria not match'}));
-                    }
-                }
-            });
-        }
-    })
+    //         db0.collection("sample").findOne({ location: 
+    //             { $nearSphere: { $geometry: 
+    //                 { type: "Point", coordinates:
+    //                  [ -6.846584,39.196204 ] }, 
+    //                  $maxDistance: 3000 } } },(err,result)=>{
+    //                      if(err){console.log(err)}else{
+    //                          res.json(result);
+    //                      }
+    //                  });
+
+
+          
+    //     }
+    // })
    }
 
 })
