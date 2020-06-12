@@ -16,6 +16,7 @@
     "geo-nearby": "^2.0.1",
     "mongodb": "^3.5.8",
     "ngeohash": "^0.6.3",
+    "nodemailer": "^6.4.8",
     "nodemon": "^2.0.4"
   }
 }
