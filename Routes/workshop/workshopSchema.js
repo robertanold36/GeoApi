@@ -4,7 +4,7 @@ const { MongoClient } = require('mongodb');
 require('dotenv/config');
 
 
-const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(process.env.DB_CONNECTION, {useUnifiedTopology: true});
 
 
 var errorMsg1 = 'Internal server error';
@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
         var db0 = db.db("Garage");
         try {
 
-            await db0.collection('WorkshopCollection').insertOne({
+            await db0.collection("WorkshopCollection").insertOne({
                 name: name,
                 location: {
                     locationName: locationName,

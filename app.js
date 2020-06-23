@@ -13,5 +13,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/nearby', require('./Routes/data/data'));
 app.use('/user/register', require('./Routes/user/user'));
 app.use('/workshop/register',require('./Routes/workshop/workshopSchema'));
+app.use('/workshop/requestWorkshop',require('./Routes/workshop/requestWorkshop'));
 
 app.listen(port);
