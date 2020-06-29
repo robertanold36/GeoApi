@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient, ObjectId } = require('mongodb');
+const { MongoClient } = require('mongodb');
+const { ObjectId }=require('mongodb').ObjectID;
 require('dotenv/config')
 const client = new MongoClient(process.env.DB_CONNECTION, { useUnifiedTopology: true });
 
@@ -24,7 +25,8 @@ router.get('/', async (req, res) => {
                     res.status(404).end(JSON.stringify({ message: errorMsg2 }));
                 } else {
                     if (result.length != 0) {
-                        res.json(result);
+                        console.log(req.url);
+                        res.status(200).end(JSON.stringify(result));
 
                     } else {
                         res.status(404).end(JSON.stringify({ message: errorMsg2 }));
