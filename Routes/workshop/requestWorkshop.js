@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 require('dotenv/config')
 const client = new MongoClient(process.env.DB_CONNECTION, { useUnifiedTopology: true });
 
@@ -18,7 +18,8 @@ router.get('/', async (req, res) => {
 
             console.log('db is connected successfully');
             var db0 = db.db("Garage");
-            db0.collection("WorkshopCollection").findOne({ _id: workshopID.toString },(err, result) => {
+            var query = { _id: new ObjectId(workshopID) };
+            db0.collection("WorkshopCollection").find(query).toArray((err, result) => {
                 if (err) {
                     res.status(404).end(JSON.stringify({ message: errorMsg2 }));
                 } else {
