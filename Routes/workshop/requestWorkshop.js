@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
             console.log('db is connected successfully');
             var db0 = db.db("Garage");
             var query = { _id: new ObjectId(workshopID) };
-            db0.collection("WorkshopCollection").find(query).toArray((err, result) => {
+            db0.collection("WorkshopCollection").findOne(query,(err, result) => {
                 if (err) {
                     res.status(404).end(JSON.stringify({ message: errorMsg2 }));
                 } else {
