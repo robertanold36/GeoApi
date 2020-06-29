@@ -26,7 +26,8 @@ router.get('/', async (req, res) => {
                 } else {
                     if (result.length != 0) {
                         console.log(req.url);
-                        res.status(200).end(JSON.stringify(result));
+                        //res.status(200).end(JSON.stringify(result));
+                        res.json(result);
 
                     } else {
                         res.status(404).end(JSON.stringify({ message: errorMsg2 }));
