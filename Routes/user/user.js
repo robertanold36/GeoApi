@@ -1,11 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient } = require('mongodb');
-require('dotenv/config');
-
-
-const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
-
+const client = require('../connection/connection');
 
 var errorMsg1 = 'Internal server error';
 

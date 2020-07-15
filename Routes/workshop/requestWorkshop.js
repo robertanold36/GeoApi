@@ -1,43 +1,51 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient } = require('mongodb');
 const { ObjectId }=require('mongodb').ObjectID;
 require('dotenv/config')
-const client = new MongoClient(process.env.DB_CONNECTION, { useUnifiedTopology: true });
+const client = require('../connection/connection');
+
 
 router.get('/', async (req, res) => {
 
     var errorMsg1 = 'workshop id not found';
     var errorMsg2 = 'internal server error';
+    var errorMsg3 = 'Bad Request';
+
 
     var workshopID = req.query.workshopID != undefined ? req.query.workshopID : req.query.workshopID = null;
 
     if (workshopID == null) {
-        res.status(404).end(JSON.stringify({ message: errorMsg1 }));
+        res.status(400).end(JSON.stringify({ message: errorMsg3 }));
     } else {
-       await client.connect().then(db => {
+       await client.connect().then(async(db) => {
 
             console.log('db is connected successfully');
             var db0 = db.db("Garage");
             var query = { _id: new ObjectId(workshopID) };
-            db0.collection("WorkshopCollection").findOne(query,(err, result) => {
+            await db0.collection("WorkshopCollection").find(query).toArray((err, result) => {
                 if (err) {
+                    console.log(req.url);
                     res.status(404).end(JSON.stringify({ message: errorMsg2 }));
                 } else {
                     if (result.length != 0) {
-                        console.log(req.url);
+                        
                         //res.status(200).end(JSON.stringify(result));
                         res.json(result);
+                        
+
 
                     } else {
-                        res.status(404).end(JSON.stringify({ message: errorMsg2 }));
+                        res.status(400).end(JSON.stringify({ message: errorMsg1 }));
+                        
                     }
                 }
             })
 
-        }).catch(err => {
+        
+
+        }).catch((err) => {
             res.status(404).end(JSON.stringify({ message: errorMsg2 }));
-            console.log('db is not successfully connected');
+            console.log('db is not successfully connected '+err);
         });
     }
 })

@@ -1,11 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient } = require('mongodb');
-require('dotenv/config');
-
-const client = new MongoClient(process.env.DB_CONNECTION, { useUnifiedTopology: true });
-
-
+const client = require('../connection/connection');
 
 router.get('/', async (req, res) => {
 
@@ -19,40 +14,42 @@ router.get('/', async (req, res) => {
         res.status(400).end(JSON.stringify({ message: msgError1, status: 'missingParameter' }));
     } else {
 
-            await client.connect().then((db) => {
+        await client.connect().then((db) => {
 
-                var db0 = db.db("Garage");
-                console.log("db connected with " + lat + ", " + lon)
-               db0.collection("WorkshopPosition").find({
-                    location:
-                    {
-                        $nearSphere: {
-                            $geometry:
-                            {
-                                type: "Point", coordinates:
-                                    [parseFloat(lat), parseFloat(lon)]
-                            },
-                            $maxDistance: 4000
-                        }
+            var db0 = db.db("Garage");
+            console.log("db connected with " + lat + ", " + lon)
+            db0.collection("WorkshopPosition").find({
+                location:
+                {
+                    $nearSphere: {
+                        $geometry:
+                        {
+                            type: "Point", coordinates:
+                                [parseFloat(lat), parseFloat(lon)]
+                        },
+                        $maxDistance: 4000
                     }
-                }).toArray((err, result) => {
-                    if (err) {
-                        console.log(err)
-                        res.status(404).end(JSON.stringify({ message: msgError3, status: 'internal server error' }));
+                }
+            }).toArray((err, result) => {
+                if (err) {
+                    console.log(err)
+                    res.status(404).end(JSON.stringify({ message: msgError3, status: 'internal server error' }));
 
-                    }
-                    else {
+                }
+                else {
 
-                        res.status(200).end(JSON.stringify({ status: 'ok', count: result.count, result: result }));
-                    }
-                });
-
-            }).catch(err => {
-
-                console.log("db not connected " + err);
-                res.status(404).end(JSON.stringify({ message: msgError2, status: 'internal server error' }));
-
+                    res.status(200).end(JSON.stringify({ status: 'ok', count: result.count, result: result }));
+                }
             });
+            
+            
+
+        }).catch(err => {
+
+            console.log("db not connected " + err);
+            res.status(404).end(JSON.stringify({ message: msgError2, status: 'internal server error' }));
+
+        });
 
     }
 

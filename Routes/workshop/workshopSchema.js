@@ -1,11 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient } = require('mongodb');
 require('dotenv/config');
-
-
-const client = new MongoClient(process.env.DB_CONNECTION, {useUnifiedTopology: true});
-
+const client = require('../connection/connection');
 
 var errorMsg1 = 'Internal server error';
 
@@ -40,7 +36,7 @@ router.post('/', async (req, res) => {
                 contacts: contacts,
                 CompanyReview: CompanyReview,
                 workshopClass: workshopClass
-            },async (err, res) => {
+            }, async (err, res) => {
                 if (err) {
                     res.status(404).end(JSON.stringify({ message: err }));
 
@@ -56,12 +52,12 @@ router.post('/', async (req, res) => {
                         "workshopID": res.insertedId, state: "on"
                     };
 
-                   await db0.collection("WorkshopPosition").insertOne(data)
-                        
+                    await db0.collection("WorkshopPosition").insertOne(data)
+
                 }
             });
 
-            res.status(200).end(JSON.stringify({ message:"Data inserted successfully" }))
+            res.status(200).end(JSON.stringify({ message: "Data inserted successfully" }))
 
 
         } catch (err) {
